@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog, protocol, net } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { pathToFileURL, fileURLToPath } = require('url');
 
 let mainWindow;
 
@@ -31,10 +32,23 @@ function createWindow() {
 // Register a custom protocol to serve local image files safely
 app.whenReady().then(() => {
   // 'gallery' protocol allows serving local files from user-selected folders
-  protocol.handle('gallery', (request) => {
-    const rawPath = request.url.slice('gallery://'.length);
-    const filePath = decodeURIComponent(rawPath);
-    return net.fetch(`file://${filePath}`);
+  protocol.handle('gallery', async (request) => {
+    const fileUrl = request.url.replace('gallery://', 'file://');
+    const filePath = fileURLToPath(fileUrl);
+    try {
+      const data = await fs.promises.readFile(filePath);
+      const ext = path.extname(filePath).toLowerCase().slice(1);
+      const mimeTypes = {
+        jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png',
+        gif: 'image/gif', bmp: 'image/bmp', webp: 'image/webp',
+        tif: 'image/tiff', tiff: 'image/tiff'
+      };
+      return new Response(data, {
+        headers: { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' }
+      });
+    } catch {
+      return new Response('Not found', { status: 404 });
+    }
   });
 
   createWindow();
@@ -97,11 +111,9 @@ ipcMain.handle('find-database-file', async (event, folderPath, volumeNumber) => 
 
 // Convert a native filesystem path to a gallery:// URL for the renderer
 ipcMain.handle('to-gallery-url', async (event, filePath) => {
-  // Normalise to forward slashes; on Windows we keep the drive letter
-  const normalised = filePath.replace(/\\/g, '/');
-  // file:// needs a leading slash on Windows paths like C:/...
-  const withLeadingSlash = normalised.startsWith('/') ? normalised : '/' + normalised;
-  return `gallery://${encodeURIComponent(withLeadingSlash)}`;
+  // pathToFileURL correctly handles all platforms and encodes special characters.
+  // We swap the file:// scheme for gallery:// so Electron routes it to our handler.
+  return pathToFileURL(filePath).toString().replace('file://', 'gallery://');
 });
 
 // Resolve a photo's local path given the volume root and the CD subfolder path
