@@ -249,6 +249,10 @@ function renderGrid() {
 
   el.grid.innerHTML = '';
   el.grid.appendChild(frag);
+
+  // Observe images only after they're in the DOM so IntersectionObserver
+  // can correctly determine their visibility and trigger src assignment.
+  el.grid.querySelectorAll('img[data-src]').forEach(img => imgObserver.observe(img));
 }
 
 function createPhotoCard(photo, idx) {
@@ -272,7 +276,6 @@ function createPhotoCard(photo, idx) {
       thumbWrap.appendChild(makeErrorPlaceholder());
     });
     thumbWrap.appendChild(img);
-    imgObserver.observe(img);
   } else {
     thumbWrap.appendChild(makeErrorPlaceholder('Not found'));
   }
