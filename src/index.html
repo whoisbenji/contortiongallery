@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' gallery: data:; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+  <title>Contortion Gallery</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════════════════════════════════════════════ -->
+  <aside id="sidebar">
+
+    <div class="sidebar-header">
+      <div class="app-logo">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="15" stroke="#a78bfa" stroke-width="2"/>
+          <path d="M10 22 Q16 8 22 22" stroke="#a78bfa" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="16" cy="10" r="2.5" fill="#a78bfa"/>
+        </svg>
+        <span>Contortion<br/>Gallery</span>
+      </div>
+    </div>
+
+    <!-- Volume selectors -->
+    <section class="sidebar-section">
+      <h3 class="section-title">Volumes</h3>
+
+      <div class="volume-card" id="vol1-card">
+        <div class="volume-icon">①</div>
+        <div class="volume-info">
+          <div class="volume-label">Volume 1</div>
+          <div class="volume-path" id="vol1-path">Not loaded</div>
+        </div>
+        <button class="btn-select" id="btn-select-vol1" title="Select Volume 1 folder">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5z"/></svg>
+          Browse
+        </button>
+      </div>
+
+      <div class="volume-card" id="vol2-card">
+        <div class="volume-icon">②</div>
+        <div class="volume-info">
+          <div class="volume-label">Volume 2</div>
+          <div class="volume-path" id="vol2-path">Not loaded</div>
+        </div>
+        <button class="btn-select" id="btn-select-vol2" title="Select Volume 2 folder">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5z"/></svg>
+          Browse
+        </button>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="stats-bar">
+      <span id="stats-text">No photos loaded</span>
+    </div>
+
+    <!-- Filters -->
+    <section class="sidebar-section" id="filter-section" style="display:none">
+      <h3 class="section-title">Filters</h3>
+
+      <!-- Volume toggle -->
+      <div class="filter-group">
+        <label class="filter-label">Volume</label>
+        <div class="pill-group" id="filter-volume">
+          <button class="pill active" data-value="all">All</button>
+          <button class="pill" data-value="1">Vol 1</button>
+          <button class="pill" data-value="2">Vol 2</button>
+        </div>
+      </div>
+
+      <!-- Gender toggle -->
+      <div class="filter-group">
+        <label class="filter-label">Gender</label>
+        <div class="pill-group" id="filter-gender">
+          <button class="pill active" data-value="all">All</button>
+          <button class="pill" data-value="Female">Female</button>
+          <button class="pill" data-value="Male">Male</button>
+        </div>
+      </div>
+
+      <!-- Category list -->
+      <div class="filter-group">
+        <label class="filter-label">Category</label>
+        <div class="filter-search-wrap">
+          <input type="search" id="category-search" class="filter-search" placeholder="Search categories…" />
+        </div>
+        <div class="filter-list" id="filter-category-list">
+          <!-- Populated by renderer.js -->
+        </div>
+      </div>
+
+      <!-- Performer search -->
+      <div class="filter-group">
+        <label class="filter-label">Performer</label>
+        <div class="filter-search-wrap">
+          <input type="search" id="performer-search" class="filter-search" placeholder="Search performers…" />
+        </div>
+        <div class="filter-list" id="filter-performer-list">
+          <!-- Populated by renderer.js -->
+        </div>
+      </div>
+    </section>
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       MAIN AREA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <main id="main">
+
+    <!-- Toolbar -->
+    <header id="toolbar">
+      <div class="toolbar-left">
+        <input type="search" id="global-search" placeholder="Search performers, categories…" />
+      </div>
+      <div class="toolbar-right">
+        <label class="sort-label">Sort by</label>
+        <select id="sort-select">
+          <option value="performer">Performer</option>
+          <option value="category">Category</option>
+          <option value="filename">Filename</option>
+          <option value="volume">Volume</option>
+        </select>
+        <div class="size-control">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="14"><path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v3A1.5 1.5 0 0 1 13.5 15h-3A1.5 1.5 0 0 1 9 13.5z"/></svg>
+          <input type="range" id="thumb-size" min="120" max="320" value="180" step="20" title="Thumbnail size" />
+        </div>
+      </div>
+    </header>
+
+    <!-- Welcome / empty state -->
+    <div id="welcome-screen">
+      <div class="welcome-inner">
+        <div class="welcome-icon">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="30" stroke="#a78bfa" stroke-width="2.5"/>
+            <path d="M20 44 Q32 16 44 44" stroke="#a78bfa" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <circle cx="32" cy="20" r="5" fill="#a78bfa"/>
+          </svg>
+        </div>
+        <h1>Contortion Gallery</h1>
+        <p>Select one or both volume folders using the sidebar to start browsing your photo collection.</p>
+        <div class="welcome-steps">
+          <div class="step"><span class="step-num">1</span> Click <strong>Browse</strong> next to Volume 1 or Volume 2</div>
+          <div class="step"><span class="step-num">2</span> Navigate to the folder you copied from the CD</div>
+          <div class="step"><span class="step-num">3</span> Your photos will appear here automatically</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading-screen" style="display:none">
+      <div class="spinner"></div>
+      <p id="loading-text">Loading photos…</p>
+    </div>
+
+    <!-- Gallery grid -->
+    <div id="gallery-grid" style="display:none">
+      <!-- Cards injected by renderer.js -->
+    </div>
+
+    <!-- No results -->
+    <div id="no-results" style="display:none">
+      <svg viewBox="0 0 64 64" fill="none" width="64"><circle cx="32" cy="32" r="30" stroke="#6b7280" stroke-width="2"/><path d="M22 42l20-20M22 22l20 20" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <p>No photos match the current filters.</p>
+      <button id="btn-clear-filters" class="btn-primary">Clear filters</button>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       LIGHTBOX
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div id="lightbox" class="lightbox" style="display:none" role="dialog" aria-modal="true">
+    <div class="lightbox-backdrop" id="lb-backdrop"></div>
+    <div class="lightbox-content">
+      <button class="lb-close" id="lb-close" aria-label="Close">✕</button>
+      <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous photo">&#8249;</button>
+      <div class="lb-image-wrap">
+        <img id="lb-image" src="" alt="" draggable="false" />
+        <div class="lb-spinner" id="lb-spinner"></div>
+      </div>
+      <button class="lb-nav lb-next" id="lb-next" aria-label="Next photo">&#8250;</button>
+      <div class="lb-meta" id="lb-meta">
+        <div class="lb-filename" id="lb-filename"></div>
+        <div class="lb-details" id="lb-details"></div>
+        <div class="lb-counter" id="lb-counter"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: parser first so renderer can call parseDatabaseFile -->
+  <script src="parser.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
