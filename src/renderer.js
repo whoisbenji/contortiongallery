@@ -270,9 +270,13 @@ function createPhotoCard(photo, idx) {
     img.className = 'thumb-img';
     img.alt = photo.performer || photo.filename;
     img.dataset.src = photo.galleryUrl;
-    img.addEventListener('load', () => img.classList.add('loaded'));
+    img.addEventListener('load', () => {
+      img.classList.add('loaded');
+      thumbWrap.classList.add('img-settled');
+    });
     img.addEventListener('error', () => {
       img.remove();
+      thumbWrap.classList.add('img-settled');
       thumbWrap.appendChild(makeErrorPlaceholder());
     });
     thumbWrap.appendChild(img);
