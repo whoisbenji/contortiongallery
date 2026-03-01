@@ -4,6 +4,13 @@
 ───────────────────────────────────────────────────────────────────────── */
 'use strict';
 
+// ── Platform ──────────────────────────────────────────────────────────────
+const SHOW_IN_FOLDER_LABEL = window.api.platform === 'darwin'
+  ? 'Show in Finder'
+  : window.api.platform === 'win32'
+    ? 'Show in Explorer'
+    : 'Show in Folder';
+
 // ── State ─────────────────────────────────────────────────────────────────
 const state = {
   volumes: { 1: null, 2: null },  // { root, dbPath, photos[] }
@@ -275,6 +282,21 @@ function createPhotoCard(photo, idx) {
   badge.className = 'volume-badge';
   badge.textContent = `V${photo.volume}`;
   thumbWrap.appendChild(badge);
+
+  // Show in Finder / Explorer button
+  if (photo.localPath) {
+    const showBtn = document.createElement('button');
+    showBtn.className = 'show-in-folder-btn';
+    showBtn.title = SHOW_IN_FOLDER_LABEL;
+    showBtn.innerHTML = `<svg viewBox="0 0 16 16" fill="none" width="11" height="11">
+      <path d="M2 4.5A1.5 1.5 0 013.5 3h3.086a1.5 1.5 0 011.06.44l.915.914A1.5 1.5 0 009.62 5H12.5A1.5 1.5 0 0114 6.5v6A1.5 1.5 0 0112.5 14h-9A1.5 1.5 0 012 12.5v-8z" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/>
+    </svg>${SHOW_IN_FOLDER_LABEL}`;
+    showBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.api.showInFolder(photo.localPath);
+    });
+    thumbWrap.appendChild(showBtn);
+  }
 
   // Caption
   const caption = document.createElement('div');

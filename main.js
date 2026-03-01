@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, protocol, net } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, protocol, net, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL, fileURLToPath } = require('url');
@@ -127,6 +127,11 @@ ipcMain.handle('find-database-file', async (event, folderPath, volumeNumber) => 
     if (found) return path.join(folderPath, found);
   } catch {}
   return null;
+});
+
+// Reveal a file in the native file manager (Finder / Explorer)
+ipcMain.handle('show-in-folder', async (event, filePath) => {
+  shell.showItemInFolder(filePath);
 });
 
 // Convert a native filesystem path to a gallery:// URL for the renderer

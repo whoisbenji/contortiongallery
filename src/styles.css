@@ -591,6 +591,42 @@ body {
   backdrop-filter: blur(4px);
 }
 
+.show-in-folder-btn {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(15, 15, 26, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-family: inherit;
+  padding: 3px 7px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), background var(--transition),
+              border-color var(--transition), color var(--transition);
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.photo-card:hover .show-in-folder-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.show-in-folder-btn:hover {
+  background: rgba(124, 92, 196, 0.88);
+  border-color: var(--accent);
+  color: #fff;
+}
+
 .photo-caption {
   padding: 7px 8px;
 }
