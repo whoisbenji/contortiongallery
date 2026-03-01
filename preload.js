@@ -19,5 +19,8 @@ contextBridge.exposeInMainWorld('api', {
   resolvePhotoPath: (volumeRoot, cdSubfolder, filename) =>
     ipcRenderer.invoke('resolve-photo-path', volumeRoot, cdSubfolder, filename),
 
+  showInFolder: (filePath) =>
+    ipcRenderer.invoke('show-in-folder', filePath),
+
   platform: process.platform
 });
