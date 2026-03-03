@@ -270,9 +270,13 @@ function createPhotoCard(photo, idx) {
     img.className = 'thumb-img';
     img.alt = photo.performer || photo.filename;
     img.dataset.src = photo.galleryUrl;
-    img.addEventListener('load', () => img.classList.add('loaded'));
+    img.addEventListener('load', () => {
+      img.classList.add('loaded');
+      thumbWrap.classList.add('img-settled');
+    });
     img.addEventListener('error', () => {
       img.remove();
+      thumbWrap.classList.add('img-settled');
       thumbWrap.appendChild(makeErrorPlaceholder());
     });
     thumbWrap.appendChild(img);
@@ -538,7 +542,11 @@ function clearAllFilters() {
 // ── Thumbnail size ────────────────────────────────────────────────────────
 function setThumbSize(size) {
   state.thumbSize = size;
-  el.grid.style.setProperty('--thumb-size', size + 'px');
+  // Set both dimensions explicitly so no browser has to infer the height.
+  // Columns are fixed-width (no 1fr stretch) so --thumb-height is always
+  // exactly 3/4 of the column width, guaranteeing a true 4:3 ratio.
+  el.grid.style.gridTemplateColumns = `repeat(auto-fill, ${size}px)`;
+  el.grid.style.setProperty('--thumb-height', Math.round(size * 0.75) + 'px');
 }
 
 // ── Wire up events ────────────────────────────────────────────────────────
