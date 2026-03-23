@@ -527,7 +527,7 @@ body {
 .thumb-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: var(--thumb-height, 135px);
   background: var(--bg-elevated);
   overflow: hidden;
 }
