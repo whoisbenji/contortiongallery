@@ -90,7 +90,7 @@ const imgObserver = new IntersectionObserver((entries) => {
       }
     }
   }
-}, { rootMargin: '200px' });
+}, { root: document.getElementById('gallery-grid'), rootMargin: '400px' });
 
 // ── Volume loading ────────────────────────────────────────────────────────
 async function selectVolume(volNum) {
